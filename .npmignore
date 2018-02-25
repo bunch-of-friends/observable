@@ -1,8 +1,9 @@
+.circleci
+.vscode
 coverage
 src
 tests
 docs
-.vscode
 jest.config.json
 tsconfig.json
 tslint.json
