@@ -1,0 +1,47 @@
+{
+  "name": "simple-observer",
+  "version": "1.0.0",
+  "description": "A simple implementation of the observer pattern written in TypeScript, usable in JavaScript as well.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "maitainers": [
+    {
+      "name": "David Bohunek",
+      "email": "bohunek@gmail.com"
+    }
+  ],
+  "keywords": [
+    "observer",
+    "observable",
+    "typescript",
+    "simple"
+  ],
+  "scripts": {
+    "test": "jest --config ./jest.config.json",
+    "build": "npm run cleanup && tsc",
+    "build:watch": "npm run cleanup && tsc -w",
+    "cleanup": "rimraf -rf dist coverage",
+    "lint": "tslint --fix 'src/**/*.ts{,x}'",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bunch-of-friends/simple-observer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bunch-of-friends/simple-observer/issues"
+  },
+  "homepage": "https://github.com/bunch-of-friends/simple-observer#readme",
+  "devDependencies": {
+    "@types/jest": "^22.1.3",
+    "jest": "^22.3.0",
+    "rimraf": "^2.6.2",
+    "ts-jest": "^22.0.4",
+    "tsdoc": "0.0.4",
+    "tslint": "^5.9.1",
+    "tslint-config-bunch-of-friends": "^1.0.1",
+    "tslint-eslint-rules": "^5.0.0",
+    "typescript": "^2.7.2"
+  }
+}
