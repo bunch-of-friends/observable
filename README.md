@@ -1,8 +1,8 @@
-# simple-observer
+# @bunch-of-friends/observable
 A simple implementation of the [observer pattern](https://en.wikipedia.org/wiki/Observer_pattern) written in TypeScript, usable in JavaScript as well.
 
 ## Key objects
-There are three key objects: [Subject](https://github.com/bunch-of-friends/simple-observer/blob/master/src/subject.ts), [Observable](https://github.com/bunch-of-friends/simple-observer/blob/master/src/observable.ts) and [Observer](https://github.com/bunch-of-friends/simple-observer/blob/master/src/observer.ts).
+There are three key objects: [Subject](https://github.com/bunch-of-friends/observable/blob/master/src/subject.ts), [Observable](https://github.com/bunch-of-friends/observable/blob/master/src/observable.ts) and [Observer](https://github.com/bunch-of-friends/observable/blob/master/src/observer.ts).
 
 ### Observer
 A function, which gets called on a change.
@@ -41,12 +41,12 @@ The library is published to npm as commonjs ES5 module. It is intended to be use
 The library comes with embedded TypeScript types, so it is easy to use in TypeScript, but it can be used as well in JavaScript.
 
 ```bash
-npm install simple-observer --save
+npm install @bunch-of-friends/observable --save
 ```
 
 Use the `createSubject` function to create an instance of Subject:
 ```ts
-import { createSubject } from 'simple-observer';
+import { createSubject } from '@bunch-of-friends/observable';
 
 const subject = createSubject<T>(); //replace `T` with type of the object that the observers will be notified with
 
@@ -57,7 +57,7 @@ subject.notifyChanges({ /* ... */ }); // the argument of notifyChanges is of typ
 
 To create an observable that can be used for registering and unregistering observers only, use the `createObservable` function:
 ```ts
-import { createObservable } from 'simple-observer';
+import { createObservable } from '@bunch-of-friends/observable';
 
 const observable = createObservable(subject); // as created earlier
 
@@ -66,7 +66,7 @@ observable.register(currentState => /* ... */ );
 
 You can also create an observable that only filters only changes that match a specific values, use the `createObservableForValue` function:
 ```ts
-import { createSubject, createObservableForValue } from 'simple-observer';
+import { createSubject, createObservableForValue } from '@bunch-of-friends/observable';
 
 enum State {
     Loading,
@@ -86,7 +86,7 @@ subject.notifyChanges(State.Loaded); // this will call the observer
 ## Example
 A simple example demonstrating the intended use:
 ```ts
-import { createSubject, createObservable, createObservableForValue } from 'simple-observer';
+import { createSubject, createObservable, createObservableForValue } from '@bunch-of-friends/observable';
 
 enum State {
     Loading,
