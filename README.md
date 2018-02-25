@@ -75,8 +75,7 @@ import { createSubject, createObservableForValue } from '@bunch-of-friends/obser
 
 enum State {
     Loading,
-    Loaded,
-    Stopped
+    Loaded
 }
 
 const subject = createSubject<State>();
