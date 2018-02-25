@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/bunch-of-friends/lerna-typescript-jest-boilerplate/blob/master/LICENSE)
 [![npm version](https://badge.fury.io/js/%40bunch-of-friends%2Fobservable.svg)](https://badge.fury.io/js/%40bunch-of-friends%2Fobservable)
-[![CircleCI](https://circleci.com/gh/bunch-of-friends/simple-observer.svg?style=svg)](https://circleci.com/gh/bunch-of-friends/simple-observer)
+[![CircleCI](https://circleci.com/gh/bunch-of-friends/observable.svg?style=svg)](https://circleci.com/gh/bunch-of-friends/observable)
 
 A simple implementation of the [observer pattern](https://en.wikipedia.org/wiki/Observer_pattern) written in TypeScript, usable in JavaScript as well.
 
