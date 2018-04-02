@@ -127,7 +127,7 @@ class ComponentConsumer {
 ```
 
 ## Async observers
-The `Observer` function can return a promise. When `Subject` is notified of changes by calling `notifyObservers`, it will wait for all observers that did return a promise and it will resolve, when all observers resolve or reject. `notifyObservers` will never reject, it will always resolve. Errors are expected to be handled by the observers.
+The `Observer` function can return a promise. When `Subject` is notified of changes by the `notifyObservers` function, it will wait for all observers that return a promise and it will resolve, when all observers resolve or reject. `notifyObservers` will never reject, it catches all rejections. Errors are expected to be handled by the observers.
 
 ## Classes vs closures
 Why are the `Subject` and `Observable` not ES6 classes?
