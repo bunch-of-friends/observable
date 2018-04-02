@@ -45,7 +45,7 @@ describe('Observable', () => {
         observer1.mockReset();
         observer2.mockReset();
 
-        observable.unregisterAll();
+        observable.unregisterAllObservers();
         subject.notifyObservers('test2');
 
         expect(observer1).not.toBeCalled();
@@ -101,7 +101,7 @@ describe('ObservableForValue', () => {
         observable.register(observer1);
         observable.register(observer2);
 
-        observable.unregisterAll();
+        observable.unregisterAllObservers();
 
         subject.notifyObservers({});
 
@@ -151,12 +151,37 @@ describe('Multiple observables', () => {
         observable1.register(observer1);
         observable2.register(observer2);
 
-        observable1.unregisterAll();
+        observable1.unregisterAllObservers();
 
         subject.notifyObservers(123);
 
         expect(observer1).not.toHaveBeenCalled();
         expect(observer2).toHaveBeenCalled();
+    });
+});
+
+describe('getCurrentState', () => {
+    it('should return subjects current state', () => {
+        const subject = createSubject();
+        const observable = createObservable(subject);
+
+        const subjectGetCurrentStateMock = subject.getCurrentState = jest.fn();
+
+        observable.getCurrentState();
+
+        expect(subjectGetCurrentStateMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return undefined for value observables', () => {
+        const subject = createSubject();
+        const observable = createObservableForValue(subject, 1);
+
+        const subjectGetCurrentStateMock = subject.getCurrentState = jest.fn();
+
+        const currentState = observable.getCurrentState();
+
+        expect(subjectGetCurrentStateMock).not.toHaveBeenCalled();
+        expect(currentState).toBeUndefined();
     });
 });
 

@@ -1,18 +1,20 @@
 import { Observer } from './observer';
-import { Subject } from './subject';
+import { Subject, createSubject } from './subject';
 
 export interface Observable<T> {
+    getCurrentState: () => T;
     register: (observer: Observer<T>) => Observer<T>;
     unregister: (observer: Observer<T>) => void;
-    unregisterAll: () => void;
+    unregisterAllObservers: () => void;
 }
 
 export function createObservable<T>(subject: Subject<T>): Observable<T> {
     const observerOwner = {};
     return {
+        getCurrentState: () => subject.getCurrentState(),
         register: (observer: Observer<T>) => subject.registerObserver(observer, observerOwner),
         unregister: (observer: Observer<T>) => subject.unregisterObserver(observer),
-        unregisterAll: () => subject.unregisterObserversOfOwner(observerOwner)
+        unregisterAllObservers: () => subject.unregisterObserversOfOwner(observerOwner)
     };
 }
 
@@ -29,6 +31,7 @@ export function createObservableForValue<T>(subject: Subject<T>, value: T): Obse
     }
 
     return {
+        getCurrentState: () => undefined,
         register: (exactValueObserver: Observer<void>) => {
             const registeredObserver = registerExactValueObserver(exactValueObserver);
             registeredObserversMap.push({ registeredObserver, exactValueObserver });
@@ -40,6 +43,6 @@ export function createObservableForValue<T>(subject: Subject<T>, value: T): Obse
                 registeredObservers.forEach(x => subject.unregisterObserver(x.registeredObserver));
             }
         },
-        unregisterAll: () => subject.unregisterObserversOfOwner(observerOwner)
+        unregisterAllObservers: () => subject.unregisterObserversOfOwner(observerOwner)
     };
 }

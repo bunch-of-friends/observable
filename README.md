@@ -13,7 +13,7 @@ There are three key objects: [Subject](https://github.com/bunch-of-friends/obser
 A function, which gets called on a change.
 ```ts
 export interface Observer<T> {
-    (newState: T, previousState?: T): void;
+    (newState: T, previousState?: T): void | Promise<void>;
 }
 ```
 
@@ -26,7 +26,7 @@ export interface Subject<T> {
     unregisterObserver(observer: Observer<T>): void;
     unregisterObserversOfOwner(owner: Object): void;
     unregisterAllObservers(): void;
-    notifyObservers(newState?: T): void;
+    notifyObservers(newState?: T): Promise<void>;
     getCurrentState(): T;
 }
 ```
@@ -37,7 +37,8 @@ Observable is a subset of Subject and is intended to be exposed outside of the o
 export interface Observable<T> {
     register: (observer: Observer<T>) => Observer<T>;
     unregister: (observer: Observer<T>) => void;
-    unregisterAll: () => void;
+    unregisterAllObservers: () => void;
+    getCurrentState(): T;
 }
 ```
 
@@ -104,7 +105,7 @@ class Component {
     public onStateChanged = createObservable(stateSubject);
 
     // shorthand if you only want to subscribe to the state chaning to Stopped
-    public onLoaded = createObservableForValue(stateSubject, State.Stopped);
+    public onLoaded = createObservableForValue(stateSubject, State.Loaded);
 
     constructor() {
         // notifyChanges would usually be called by some more reasonable code
@@ -124,6 +125,10 @@ class ComponentConsumer {
     }
 }
 ```
+
+## Async observers
+
+The `Observer` function can return a promise. When `Subject` is notified of changes by calling `notifyObservers`, it will wait for all observers that did return a promise and it will resolve, when all observers resolve or reject. `notifyObservers` will never reject, it will always resolve. Errors are expected to be handled by the observers.
 
 ## Classes vs closures
 Why are the `Subject` and `Observable` not ES6 classes?
