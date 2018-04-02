@@ -10,7 +10,7 @@ A simple implementation of the [observer pattern](https://en.wikipedia.org/wiki/
 There are three key objects: [Subject](https://github.com/bunch-of-friends/observable/blob/master/src/subject.ts), [Observable](https://github.com/bunch-of-friends/observable/blob/master/src/observable.ts) and [Observer](https://github.com/bunch-of-friends/observable/blob/master/src/observer.ts).
 
 ### Observer
-A function, which gets called on a change.
+A function, which gets called on a change. Observers can return a promise, see [Async observers](#async-observers) below.
 ```ts
 export interface Observer<T> {
     (newState: T, previousState?: T): void | Promise<void>;
