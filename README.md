@@ -104,7 +104,7 @@ class Component {
     // use this to subscribe to any state change
     public onStateChanged = createObservable(stateSubject);
 
-    // shorthand if you only want to subscribe to the state chaning to Stopped
+    // shorthand if you only want to subscribe to the state changing to Loaded
     public onLoaded = createObservableForValue(stateSubject, State.Loaded);
 
     constructor() {
