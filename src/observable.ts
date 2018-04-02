@@ -1,5 +1,5 @@
 import { Observer } from './observer';
-import { Subject, createSubject } from './subject';
+import { Subject } from './subject';
 
 export interface Observable<T> {
     getCurrentState: () => T;
