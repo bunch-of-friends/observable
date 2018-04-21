@@ -1,4 +1,3 @@
-
 import { Subject, createSubject } from '../src/subject';
 import { Observer } from '../src/observer';
 
@@ -90,38 +89,43 @@ describe('Subject', () => {
             expect(observer.mock.calls[1][0]).toBe('data');
         });
 
-        it('should not notify on same value change if options.shouldNotifyOnlyIfNewStateDiffers set to true', () => {
-            subject = createSubject<any>({ shouldNotifyOnlyIfNewStateDiffers: true });
-            const observer = jest.fn();
-            subject.registerObserver(observer, callbacksOwner);
+        it('should resolve when all observers that return promise resolve', () => {
+            let testValue = 0;
+            const createObserver = () => () => {
+                return new Promise<void>((resolve) => {
+                    setTimeout(() => {
+                        testValue++;
+                        resolve();
+                    }, 0);
+                });
+            };
 
-            subject.notifyObservers('data');
-            subject.notifyObservers('data');
-            subject.notifyObservers('data');
-            subject.notifyObservers('data');
-            subject.notifyObservers('data');
+            subject.registerObserver(createObserver(), callbacksOwner);
+            subject.registerObserver(createObserver(), callbacksOwner);
+            subject.registerObserver(createObserver(), callbacksOwner);
 
-            expect(observer).toHaveBeenCalledTimes(1);
-            expect(observer).toHaveBeenCalledWith('data', null);
+            const waitPromise = subject.notifyObservers();
+            expect(testValue).toBe(0);
+
+            return waitPromise.then(() => {
+                expect(testValue).toBe(3);
+            });
         });
 
-        it('should notify if the state changed if options.shouldNotifyOnlyIfNewStateDiffers set to true', () => {
-            subject = createSubject<any>({ shouldNotifyOnlyIfNewStateDiffers: true });
-            const observer = jest.fn();
-            subject.registerObserver(observer, callbacksOwner);
+        it('should resolve if no observers return promise', () => {
+            subject.registerObserver(jest.fn().mockReturnValue(null), callbacksOwner);
 
-            subject.notifyObservers('data');
-            subject.notifyObservers('data');
-            subject.notifyObservers('data');
-            subject.notifyObservers('data');
+            return subject.notifyObservers().then(() => {
+                expect(true).toBeTruthy(); // here just have an expectation in the test
+            });
+        });
 
-            subject.notifyObservers('new-data');
-            subject.notifyObservers('new-data');
-            subject.notifyObservers('new-data');
+        it('should resolve even if an observer returns rejected promise', () => {
+            subject.registerObserver(jest.fn().mockReturnValue(Promise.reject('')), callbacksOwner);
 
-            expect(observer).toHaveBeenCalledTimes(2);
-            expect(observer.mock.calls[0][0]).toBe('data');
-            expect(observer.mock.calls[1][0]).toBe('new-data');
+            return subject.notifyObservers().then(() => {
+                expect(true).toBeTruthy(); // here just have an expectation in the test
+            });
         });
     });
 
@@ -225,7 +229,7 @@ describe('Subject', () => {
         });
     });
 
-    describe('currentState', () => {
+    describe('getCurrentState', () => {
         it('should return curren state', () => {
             subject.notifyObservers('data1');
             expect(subject.getCurrentState()).toBe('data1');
@@ -238,8 +242,16 @@ describe('Subject', () => {
             const subject1 = createSubject<any>();
             expect(subject1.getCurrentState()).toBe(null);
 
-            const subject2 = createSubject<any>({ initialState: 'initial'});
+            const subject2 = createSubject<any>({ initialState: 'initial' });
             expect(subject2.getCurrentState()).toBe('initial');
+        });
+
+        it('should return current state value, when called from an observer', () => {
+            subject.notifyObservers('data1');
+
+            subject.registerObserver((currentState, previousState) => {
+                expect(currentState).toBe(subject.getCurrentState());
+            }, callbacksOwner);
         });
     });
 });

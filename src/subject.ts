@@ -5,13 +5,12 @@ export interface Subject<T> {
     unregisterObserver(observer: Observer<T>): void;
     unregisterObserversOfOwner(owner: Object): void;
     unregisterAllObservers(): void;
-    notifyObservers(newState?: T): void;
+    notifyObservers(newState?: T): Promise<void>;
     getCurrentState(): T;
 }
 
-export function createSubject<T>(options?: { shouldNotifyOnlyIfNewStateDiffers?: boolean, initialState?: T }) {
-    const shouldNotifyOnlyIfNewStateDiffers = options ? (options.shouldNotifyOnlyIfNewStateDiffers || false) : false;
-    let currentState = options ? (options.initialState || null) : null;
+export function createSubject<T>(options?: { initialState?: T }): Subject<T> {
+    let currentState = (!options || options.initialState === undefined) ? null : options.initialState;
     let registeredObservers = new Array<{ observer: Observer<T>, owner: Object }>();
 
     return {
@@ -38,12 +37,20 @@ export function createSubject<T>(options?: { shouldNotifyOnlyIfNewStateDiffers?:
             registeredObservers = [];
         },
         notifyObservers: (newState?: T) => {
-            if (shouldNotifyOnlyIfNewStateDiffers && newState === currentState) {
-                return;
-            }
-
-            registeredObservers.forEach(item => item.observer(newState, currentState));
+            const previousState = currentState;
             currentState = newState;
+
+            const promises = new Array<Promise<void>>();
+            registeredObservers.forEach(item => {
+                const returned = item.observer(currentState, previousState);
+                if (returned && typeof returned.then === 'function' && typeof returned.catch === 'function') {
+                    promises.push(returned);
+                }
+            });
+
+            return Promise.all(promises)
+                .then(() => Promise.resolve())
+                .catch(() => Promise.resolve());
         },
         getCurrentState: () => {
             return currentState;
