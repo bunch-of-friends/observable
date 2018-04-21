@@ -1,6 +1,6 @@
 {
   "name": "@bunch-of-friends/observable",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "A simple implementation of the observer pattern written in TypeScript, usable in JavaScript as well.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
