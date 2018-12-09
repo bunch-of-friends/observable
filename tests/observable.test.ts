@@ -1,199 +1,203 @@
-import { Subject, createSubject } from '../src/subject';
-import { Observer } from '../src/observer';
-import { Observable, createObservable, createObservableForValue } from '../src/observable';
+import { Subject, createSubject } from "../src/subject";
+import { Observer } from "../src/observer";
+import {
+  Observable,
+  createObservable,
+  createObservableForValue
+} from "../src/observable";
 
-describe('Observable', () => {
-    let observable: Observable<any>;
-    let subject: Subject<any>;
+describe("Observable", () => {
+  let observable: Observable<any>;
+  let subject: Subject<any>;
 
-    beforeEach(() => {
-        subject = createSubject<any>();
-        observable = createObservable(subject);
-    });
+  beforeEach(() => {
+    subject = createSubject<any>();
+    observable = createObservable(subject);
+  });
 
-    it('should notify registered observers', () => {
-        const observer1 = jest.fn();
-        const observer2 = jest.fn();
-        observable.register(observer1);
-        observable.register(observer2);
-        subject.notifyObservers('test');
+  it("should notify registered observers", () => {
+    const observer1 = jest.fn();
+    const observer2 = jest.fn();
+    observable.register(observer1);
+    observable.register(observer2);
+    subject.notifyObservers("test");
 
-        expect(observer1).toBeCalled();
-        expect(observer2).toBeCalled();
-    });
+    expect(observer1).toBeCalled();
+    expect(observer2).toBeCalled();
+  });
 
-    it('should unregistered observers', () => {
-        const observer = jest.fn();
-        observable.register(observer);
-        subject.notifyObservers('test');
+  it("should unregistered observers", () => {
+    const observer = jest.fn();
+    observable.register(observer);
+    subject.notifyObservers("test");
 
-        observer.mockReset();
+    observer.mockReset();
 
-        observable.unregister(observer);
-        subject.notifyObservers('test2');
+    observable.unregister(observer);
+    subject.notifyObservers("test2");
 
-        expect(observer).not.toBeCalled();
-    });
+    expect(observer).not.toBeCalled();
+  });
 
-    it('should unregister all observers', () => {
-        const observer1 = jest.fn();
-        const observer2 = jest.fn();
-        observable.register(observer1);
-        observable.register(observer2);
-        subject.notifyObservers('test');
+  it("should unregister all observers", () => {
+    const observer1 = jest.fn();
+    const observer2 = jest.fn();
+    observable.register(observer1);
+    observable.register(observer2);
+    subject.notifyObservers("test");
 
-        observer1.mockReset();
-        observer2.mockReset();
+    observer1.mockReset();
+    observer2.mockReset();
 
-        observable.unregisterAllObservers();
-        subject.notifyObservers('test2');
+    observable.unregisterAllObservers();
+    subject.notifyObservers("test2");
 
-        expect(observer1).not.toBeCalled();
-        expect(observer2).not.toBeCalled();
-    });
+    expect(observer1).not.toBeCalled();
+    expect(observer2).not.toBeCalled();
+  });
 });
 
-describe('ObservableForValue', () => {
-    let observable: Observable<void>;
-    let subject: Subject<any>;
+describe("ObservableForValue", () => {
+  let observable: Observable<void>;
+  let subject: Subject<any>;
 
-    beforeEach(() => {
-        subject = createSubject<any>();
-        observable = createObservableForValue(subject, 1);
-    });
+  beforeEach(() => {
+    subject = createSubject<any>();
+    observable = createObservableForValue(subject, 1);
+  });
 
-    it('should notify only if state changed to specific value', () => {
-        const observer = jest.fn();
-        observable.register(observer);
+  it("should notify only if state changed to specific value", () => {
+    const observer = jest.fn();
+    observable.register(observer);
 
-        subject.notifyObservers(2);
-        subject.notifyObservers(3);
-        subject.notifyObservers(false);
-        subject.notifyObservers(true);
+    subject.notifyObservers(2);
+    subject.notifyObservers(3);
+    subject.notifyObservers(false);
+    subject.notifyObservers(true);
 
-        expect(observer).not.toHaveBeenCalled();
+    expect(observer).not.toHaveBeenCalled();
 
-        subject.notifyObservers(1);
+    subject.notifyObservers(1);
 
-        expect(observer).toHaveBeenCalled();
-    });
+    expect(observer).toHaveBeenCalled();
+  });
 
-    it('should unregistered observers', () => {
-        const observer1 = jest.fn();
-        const observer2 = jest.fn();
-        const returnedObserver1 = observable.register(observer1);
-        subject.notifyObservers(1);
+  it("should unregistered observers", () => {
+    const observer1 = jest.fn();
+    const observer2 = jest.fn();
+    const returnedObserver1 = observable.register(observer1);
+    subject.notifyObservers(1);
 
-        observer1.mockReset();
-        observer2.mockReset();
+    observer1.mockReset();
+    observer2.mockReset();
 
-        observable.unregister(returnedObserver1);
-        observable.unregister(observer2);
-        subject.notifyObservers(1);
+    observable.unregister(returnedObserver1);
+    observable.unregister(observer2);
+    subject.notifyObservers(1);
 
-        expect(observer1).not.toBeCalled();
-        expect(observer2).not.toBeCalled();
-    });
+    expect(observer1).not.toBeCalled();
+    expect(observer2).not.toBeCalled();
+  });
 
-    it('should unregister all observers', () => {
-        const observer1 = jest.fn();
-        const observer2 = jest.fn();
-        observable.register(observer1);
-        observable.register(observer2);
+  it("should unregister all observers", () => {
+    const observer1 = jest.fn();
+    const observer2 = jest.fn();
+    observable.register(observer1);
+    observable.register(observer2);
 
-        observable.unregisterAllObservers();
+    observable.unregisterAllObservers();
 
-        subject.notifyObservers({});
+    subject.notifyObservers({});
 
-        expect(observer1).not.toHaveBeenCalled();
-        expect(observer2).not.toHaveBeenCalled();
-    });
+    expect(observer1).not.toHaveBeenCalled();
+    expect(observer2).not.toHaveBeenCalled();
+  });
 });
 
-describe('Multiple observables', () => {
-    let observable1: Observable<any>;
-    let observable2: Observable<any>;
-    let observableForValue: Observable<void>;
-    let subject: Subject<any>;
+describe("Multiple observables", () => {
+  let observable1: Observable<any>;
+  let observable2: Observable<any>;
+  let observableForValue: Observable<void>;
+  let subject: Subject<any>;
 
-    beforeEach(() => {
-        subject = createSubject<any>();
-        observable1 = createObservable(subject);
-        observable2 = createObservable(subject);
-        observableForValue = createObservableForValue(subject, 'test');
-    });
+  beforeEach(() => {
+    subject = createSubject<any>();
+    observable1 = createObservable(subject);
+    observable2 = createObservable(subject);
+    observableForValue = createObservableForValue(subject, "test");
+  });
 
-    it('should notify all observables', () => {
-        const observer1 = jest.fn();
-        const observer2 = jest.fn();
-        const observer3 = jest.fn();
+  it("should notify all observables", () => {
+    const observer1 = jest.fn();
+    const observer2 = jest.fn();
+    const observer3 = jest.fn();
 
-        observable1.register(observer1);
-        observable2.register(observer2);
-        observableForValue.register(observer3);
-        subject.notifyObservers('123');
+    observable1.register(observer1);
+    observable2.register(observer2);
+    observableForValue.register(observer3);
+    subject.notifyObservers("123");
 
-        expect(observer1).toHaveBeenCalled();
-        expect(observer2).toHaveBeenCalled();
-        expect(observer3).not.toHaveBeenCalled(); // it is only observing for a specific value
+    expect(observer1).toHaveBeenCalled();
+    expect(observer2).toHaveBeenCalled();
+    expect(observer3).not.toHaveBeenCalled(); // it is only observing for a specific value
 
-        subject.notifyObservers('test');
+    subject.notifyObservers("test");
 
-        expect(observer1).toHaveBeenCalledTimes(2);
-        expect(observer2).toHaveBeenCalledTimes(2);
-        expect(observer3).toHaveBeenCalledTimes(1);
-    });
+    expect(observer1).toHaveBeenCalledTimes(2);
+    expect(observer2).toHaveBeenCalledTimes(2);
+    expect(observer3).toHaveBeenCalledTimes(1);
+  });
 
-    it('should unregister observables listeners', () => {
-        const observer1 = jest.fn();
-        const observer2 = jest.fn();
+  it("should unregister observables listeners", () => {
+    const observer1 = jest.fn();
+    const observer2 = jest.fn();
 
-        observable1.register(observer1);
-        observable2.register(observer2);
+    observable1.register(observer1);
+    observable2.register(observer2);
 
-        observable1.unregisterAllObservers();
+    observable1.unregisterAllObservers();
 
-        subject.notifyObservers(123);
+    subject.notifyObservers(123);
 
-        expect(observer1).not.toHaveBeenCalled();
-        expect(observer2).toHaveBeenCalled();
-    });
+    expect(observer1).not.toHaveBeenCalled();
+    expect(observer2).toHaveBeenCalled();
+  });
 });
 
-describe('getCurrentState', () => {
-    it('should return subjects current state', () => {
-        const subject = createSubject();
-        const observable = createObservable(subject);
+describe("getCurrentState", () => {
+  it("should return subjects current state", () => {
+    const subject = createSubject();
+    const observable = createObservable(subject);
 
-        const subjectGetCurrentStateMock = subject.getCurrentState = jest.fn();
+    const subjectGetCurrentStateMock = (subject.getCurrentState = jest.fn());
 
-        observable.getCurrentState();
+    observable.getCurrentState();
 
-        expect(subjectGetCurrentStateMock).toHaveBeenCalledTimes(1);
-    });
+    expect(subjectGetCurrentStateMock).toHaveBeenCalledTimes(1);
+  });
 
-    it('should return undefined for value observables', () => {
-        const subject = createSubject();
-        const observable = createObservableForValue(subject, 1);
+  it("should return undefined for value observables", () => {
+    const subject = createSubject();
+    const observable = createObservableForValue(subject, 1);
 
-        const subjectGetCurrentStateMock = subject.getCurrentState = jest.fn();
+    const subjectGetCurrentStateMock = (subject.getCurrentState = jest.fn());
 
-        const currentState = observable.getCurrentState();
+    const currentState = observable.getCurrentState();
 
-        expect(subjectGetCurrentStateMock).not.toHaveBeenCalled();
-        expect(currentState).toBeUndefined();
-    });
+    expect(subjectGetCurrentStateMock).not.toHaveBeenCalled();
+    expect(currentState).toBeUndefined();
+  });
 });
 
-describe('Observable <-> Subject', () => {
-    it('should stop notifying observers if subjects unregisters all', () => {
-        const subject = createSubject();
-        const observable = createObservable(subject);
-        const observer = observable.register(jest.fn());
+describe("Observable <-> Subject", () => {
+  it("should stop notifying observers if subjects unregisters all", () => {
+    const subject = createSubject();
+    const observable = createObservable(subject);
+    const observer = observable.register(jest.fn());
 
-        subject.unregisterAllObservers();
-        subject.notifyObservers(true);
+    subject.unregisterAllObservers();
+    subject.notifyObservers(true);
 
-        expect(observer).not.toHaveBeenCalled();
-    });
+    expect(observer).not.toHaveBeenCalled();
+  });
 });

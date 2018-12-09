@@ -1,3 +1,16 @@
 {
-    "extends": "tslint-config-bunch-of-friends"
+    "defaultSeverity": "error",
+    "extends": ["tslint-config-bunch-of-friends", "tslint-config-prettier"],
+    "rulesDirectory": "tslint-plugin-prettier",
+    "rules": {
+        "trailing-comma": true,
+        "variable-name": false,
+        "no-unused-variable": false,
+        "no-null-keyword": false,
+        "no-inferrable-types": true,
+        "array-type": [true, "generic"],
+        "ter-indent": false,
+        "no-use-before-declare": false,
+        "prettier": true
+    }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@bunch-of-friends/observable",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "A simple implementation of the observer pattern written in TypeScript, usable in JavaScript as well.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -22,7 +22,8 @@
     "build": "npm run cleanup && tsc",
     "build:watch": "npm run cleanup && tsc -w",
     "cleanup": "rimraf -rf dist coverage",
-    "lint": "tslint --fix 'src/**/*.ts{,x}'",
+    "lint": "tslint '**/*.ts{,x}' -e '**/**/*d.ts' -e '**/node_modules/**'",
+    "prettier": "prettier --write '**/**/*.{ts,tsx,css}'",
     "prepublish": "npm run build"
   },
   "repository": {
@@ -40,10 +41,13 @@
     "@types/jest": "^23.3.10",
     "jest": "^23.6.0",
     "rimraf": "^2.6.2",
+    "prettier": "^1.15.3",
     "ts-jest": "^23.10.5",
-    "tslint": "^5.9.1",
-    "tslint-config-bunch-of-friends": "^1.0.1",
-    "tslint-eslint-rules": "^5.0.0",
+    "tslint": "^5.11.0",
+    "tslint-config-bunch-of-friends": "^1.0.3",
+    "tslint-config-prettier": "^1.17.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "tslint-plugin-prettier": "^2.0.1",
     "typescript": "^3.2.2"
   }
 }
