@@ -130,6 +130,31 @@ describe("Subject", () => {
         expect(true).toBeTruthy(); // here just have an expectation in the test
       });
     });
+
+    it("should not short circuit if one of the observers returns a rejected promise", () => {
+      let called = false;
+
+      subject.registerObserver(
+        jest.fn().mockReturnValue(Promise.reject("")),
+        callbacksOwner
+      );
+
+      subject.registerObserver(
+        jest.fn().mockReturnValue(
+          new Promise(resolve => {
+            setTimeout(() => {
+              called = true;
+              resolve();
+            }, 1);
+          })
+        ),
+        callbacksOwner
+      );
+
+      return subject.notifyObservers().then(() => {
+        expect(called).toBeTruthy();
+      });
+    });
   });
 
   describe("unregisterObserver", () => {
