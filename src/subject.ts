@@ -9,6 +9,10 @@ export interface Subject<T> {
   getCurrentState(): T;
 }
 
+function reflect(promise: Promise<any>): Promise<any> {
+  return promise.then(res => res).catch(e => e);
+}
+
 export function createSubject<T>(options?: { initialState?: T }): Subject<T> {
   let currentState =
     !options || options.initialState === undefined
@@ -60,9 +64,7 @@ export function createSubject<T>(options?: { initialState?: T }): Subject<T> {
         }
       });
 
-      return Promise.all(promises)
-        .then(() => Promise.resolve())
-        .catch(() => Promise.resolve());
+      return Promise.all(promises.map(reflect)).then(() => Promise.resolve());
     },
     getCurrentState: () => {
       return currentState;

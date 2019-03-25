@@ -1,6 +1,6 @@
 {
   "name": "@bunch-of-friends/observable",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "A simple implementation of the observer pattern written in TypeScript, usable in JavaScript as well.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,6 +9,10 @@
     {
       "name": "David Bohunek",
       "email": "bohunek@gmail.com"
+    },
+    {
+      "name": "Nick Michael",
+      "email": "nickmichael@live.co.uk"
     }
   ],
   "keywords": [
