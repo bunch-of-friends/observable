@@ -28,13 +28,9 @@ export function createSubject<T>(options?: { initialState?: T }): Subject<T> {
       return observer;
     },
     unregisterObserver: (observer: Observer<T>) => {
-      registeredObservers.forEach((item, index) => {
-        if (item.observer !== observer) {
-          return;
-        }
-
-        registeredObservers.splice(index, 1);
-      });
+      registeredObservers = registeredObservers.filter(
+        item => item.observer !== observer
+      );
     },
     unregisterObserversOfOwner: (owner: Object) => {
       registeredObservers = registeredObservers.filter(

@@ -25,7 +25,7 @@ export function createObservableForValue<T>(
   value: T
 ): Observable<void> {
   const observerOwner = {};
-  const registeredObserversMap = new Array<{
+  let registeredObserversMap = new Array<{
     registeredObserver: Observer<T>;
     exactValueObserver: Observer<void>;
   }>();
@@ -46,14 +46,15 @@ export function createObservableForValue<T>(
       return exactValueObserver;
     },
     unregister: (exactValueObserver: Observer<void>) => {
-      const registeredObservers = registeredObserversMap.filter(
-        x => x.exactValueObserver === exactValueObserver
+      registeredObserversMap = registeredObserversMap.filter(
+        (x) => {
+          if (x.exactValueObserver === exactValueObserver) {
+            subject.unregisterObserver(x.registeredObserver);
+            return false;
+          }
+          return true;
+        }
       );
-      if (registeredObservers) {
-        registeredObservers.forEach(x =>
-          subject.unregisterObserver(x.registeredObserver)
-        );
-      }
     },
     unregisterAllObservers: () =>
       subject.unregisterObserversOfOwner(observerOwner)
